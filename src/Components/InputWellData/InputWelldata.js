@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const InputWelldata = () => {
   const [depth, setDepth] = useState("");
@@ -18,29 +18,31 @@ const InputWelldata = () => {
   const [vp, setVp] = useState("");
   const [vs, setVs] = useState("");
   const navigate = useNavigate();
+
+  const { id } = useParams();
+
   const saveDepth = async (e) => {
     e.preventDefault();
-    try {
-      await axios.post("http://localhost:5000/wells", {
-        depth,
-        gr,
-        nphi,
-        vp,
-        vs,
-      });
-      navigate("/WellData");
-    } catch (error) {
-      console.log(error);
-    }
+
+    const dataList = {
+      depth: Number(depth),
+      gr: Number(gr),
+      nphi: Number(nphi),
+      vp: Number(vp),
+      vs: Number(vs),
+    };
+    const res = await axios.get(`http://localhost:5000/wells/${id}`);
+
+    let listDepth = res.data.depths ? res.data.depths : [];
+    listDepth.push(dataList);
+
+    axios.patch(`http://localhost:5000/wells/${id}`, {
+      depths: listDepth,
+    });
+    navigate(`/WellData/DepthData/${id}`);
   };
 
   return (
-    // <Box
-    //   sx={{
-    //     "& .MuiTextField-root": { m: 1, width: "25ch" },
-    //   }}
-    //   onSubmit={saveDepth}
-    // >
     <form onSubmit={saveDepth}>
       <TextField
         type="number"
@@ -75,6 +77,7 @@ const InputWelldata = () => {
       <Button variant="contained" type="submit">
         Submit
       </Button>
+      <Button variant="outlined">Add Depth by Upload CSV </Button>
     </form>
     // </Box>
   );

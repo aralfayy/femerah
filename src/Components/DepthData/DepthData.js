@@ -43,7 +43,7 @@ export const DepthData = () => {
 
   useEffect(() => {
     getWellData();
-  }, []);
+  }, [depth]);
 
   const { id } = useParams();
 
@@ -67,10 +67,20 @@ export const DepthData = () => {
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
         <TableHead>
-          <Button component={Link} to="/WellData/Input" variant="outlined">
+          <Button
+            component={Link}
+            to={`/WellData/Input/${id}`}
+            variant="outlined"
+          >
             Add Depth
           </Button>
-          <Button variant="outlined">Save</Button>
+          <Button
+            component={Link}
+            to={`/WellData/CSVUpload/${id}`}
+            variant="outlined"
+          >
+            Add Depth by Upload CSV
+          </Button>
 
           <TableRow>
             <StyledTableCell>Depth</StyledTableCell>
@@ -94,7 +104,7 @@ export const DepthData = () => {
               <StyledTableCell align="right">
                 <Button
                   component={Link}
-                  to={`/WellData/DepthData/Edit/${dep._id}`}
+                  to={`/WellData/DepthData/Edit/${id}/${i}`}
                   variant="outlined"
                   startIcon={<Edit />}
                 >
